@@ -1,9 +1,57 @@
 import StudentLayout from '../../components/StudentLayout.jsx';
 import { Camera, Mail, Plus } from 'lucide-react';
+import { useState } from 'react';
+import { updateUser } from '../../data/siteData.js';
 
 export default function StudentProfile() {
-  // read current session user (mock backend stores session in localStorage)
   const user = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('internhub_user') || 'null') : null;
+
+  // NEW: include yearOfStudy in form state
+  const [form, setForm] = useState({
+    name: user?.name || '',
+    nickname: user?.nickname || '',
+    phone: user?.phone || '',
+    gender: user?.gender || '',
+    country: user?.country || '',
+    language: user?.language || 'English',
+    timezone: user?.timezone || '',
+    yearOfStudy: user?.yearOfStudy || '', // <- added
+    skills: user?.skills || []
+  });
+  const [saving, setSaving] = useState(false);
+  const [saveMsg, setSaveMsg] = useState('');
+
+  const handleChange = (key) => (e) => {
+    const val = e.target?.value;
+    setForm(prev => ({ ...prev, [key]: val }));
+  };
+
+  const handleSave = async () => {
+    if (!user) return;
+    setSaving(true);
+    setSaveMsg('');
+    try {
+      const patched = await updateUser(user.id, {
+        name: form.name,
+        nickname: form.nickname,
+        phone: form.phone,
+        gender: form.gender,
+        country: form.country,
+        language: form.language,
+        timezone: form.timezone,
+        yearOfStudy: form.yearOfStudy, // <- include in patch
+        skills: form.skills
+      });
+      // update session
+      localStorage.setItem('internhub_user', JSON.stringify(patched));
+      setSaveMsg('Saved');
+    } catch (err) {
+      setSaveMsg('Save failed');
+    } finally {
+      setSaving(false);
+      setTimeout(()=>setSaveMsg(''),2000);
+    }
+  };
 
   return (
     <StudentLayout>
@@ -41,7 +89,8 @@ export default function StudentProfile() {
               </label>
               <input
                 type="text"
-                defaultValue={user?.name || 'Student Name'}
+                value={form.name}
+                onChange={handleChange('name')}
                 className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
               />
             </div>
@@ -53,7 +102,8 @@ export default function StudentProfile() {
               <input
                 type="text"
                 placeholder="Your First Name"
-                defaultValue={user?.nickname || ''}
+                value={form.nickname}
+                onChange={handleChange('nickname')}
                 className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
               />
             </div>
@@ -74,8 +124,12 @@ export default function StudentProfile() {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Year of Study
               </label>
-              <select className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none">
-                <option>Select</option>
+              <select
+                value={form.yearOfStudy}
+                onChange={handleChange('yearOfStudy')}
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+              >
+                <option value="">Select</option>
                 <option>First Year</option>
                 <option>Second Year</option>
                 <option>Third Year</option>
@@ -90,7 +144,8 @@ export default function StudentProfile() {
               <input
                 type="tel"
                 placeholder="+1 (555) 000-0000"
-                defaultValue={user?.phone || ''}
+                value={form.phone}
+                onChange={handleChange('phone')}
                 className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
               />
             </div>
@@ -99,7 +154,11 @@ export default function StudentProfile() {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Gender
               </label>
-              <select className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none">
+              <select
+                value={form.gender}
+                onChange={handleChange('gender')}
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+              >
                 <option>Select</option>
                 <option>Male</option>
                 <option>Female</option>
@@ -112,7 +171,11 @@ export default function StudentProfile() {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Country
               </label>
-              <select className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none">
+              <select
+                value={form.country}
+                onChange={handleChange('country')}
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+              >
                 <option>Select</option>
                 <option>United States</option>
                 <option>United Kingdom</option>
@@ -126,7 +189,11 @@ export default function StudentProfile() {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Language
               </label>
-              <select className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none">
+              <select
+                value={form.language}
+                onChange={handleChange('language')}
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+              >
                 <option>{user?.language || 'English'}</option>
                 <option>Spanish</option>
                 <option>French</option>
@@ -138,7 +205,11 @@ export default function StudentProfile() {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Time Zone
               </label>
-              <select className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none">
+              <select
+                value={form.timezone}
+                onChange={handleChange('timezone')}
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+              >
                 <option>Select</option>
                 <option>UTC-5 (EST)</option>
                 <option>UTC-8 (PST)</option>
@@ -192,10 +263,17 @@ export default function StudentProfile() {
             <button className="px-6 py-3 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors font-medium text-gray-700">
               Cancel
             </button>
-            <button className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-200 hover:shadow-lg font-medium">
-              Save Changes
+            <button onClick={handleSave} className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-200 hover:shadow-lg font-medium">
+              {saving ? 'Saving...' : 'Save Changes'}
             </button>
           </div>
+          {saveMsg && (
+            <div className="mt-4 text-center">
+              <span className={`text-sm ${saveMsg === 'Saved' ? 'text-green-600' : 'text-red-600'}`}>
+                {saveMsg}
+              </span>
+            </div>
+          )}
         </div>
       </div>
     </StudentLayout>
