@@ -6,7 +6,10 @@ export default function AdminLayout(props) {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const user = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('internhub_user') || 'null') : null;
+
   const handleLogout = () => {
+    localStorage.removeItem('internhub_user');
     navigate('/');
   };
 
@@ -60,11 +63,11 @@ export default function AdminLayout(props) {
         <div className="p-4 border-t border-gray-200">
           <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors mb-2">
             <div className="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center text-white font-semibold">
-              V
+              {user ? user.name.charAt(0) : 'A'}
             </div>
             <div className="flex-1">
-              <p className="text-sm font-medium text-gray-900">Vivek Kumar Rathour</p>
-              <p className="text-xs text-gray-500">vivek@example.com</p>
+              <p className="text-sm font-medium text-gray-900">{user?.name || 'Admin Name'}</p>
+              <p className="text-xs text-gray-500">{user?.email || 'admin@example.com'}</p>
             </div>
           </div>
           

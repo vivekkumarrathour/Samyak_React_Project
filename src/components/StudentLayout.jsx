@@ -6,7 +6,10 @@ export default function StudentLayout(props) {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const user = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('internhub_user') || 'null') : null;
+
   const handleLogout = () => {
+    localStorage.removeItem('internhub_user');
     navigate('/');
   };
 
@@ -59,11 +62,11 @@ export default function StudentLayout(props) {
         <div className="p-4 border-t border-gray-200">
           <div className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors mb-2">
             <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold">
-              S
+              {user ? user.name.charAt(0) : 'S'}
             </div>
             <div className="flex-1">
-              <p className="text-sm font-medium text-gray-900">Student Name</p>
-              <p className="text-xs text-gray-500">2400030562</p>
+              <p className="text-sm font-medium text-gray-900">{user?.name || 'Student Name'}</p>
+              <p className="text-xs text-gray-500">{user?.studentId || '2400030562'}</p>
             </div>
           </div>
           

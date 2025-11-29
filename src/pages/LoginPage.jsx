@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import { login as mockLogin } from '../data/mockBackend.js';
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -8,6 +9,12 @@ export default function LoginPage() {
   const [isSignUp, setIsSignUp] = useState(false);
   const [role, setRole] = useState('student');
   const [isLoading, setIsLoading] = useState(true);
+
+  // NEW controlled fields + auth state
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [authError, setAuthError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -92,9 +99,22 @@ export default function LoginPage() {
           </div>
         )}
 
-        <form className="space-y-5" onSubmit={(e) => {
+        <form className="space-y-5" onSubmit={async (e) => {
           e.preventDefault();
-          navigate(role === 'student' ? '/student/dashboard' : '/admin/dashboard');
+          setAuthError('');
+          setIsSubmitting(true);
+          try {
+            const user = await mockLogin(email.trim(), password);
+            // persist "session"
+            localStorage.setItem('internhub_user', JSON.stringify(user));
+            // navigate according to role returned by backend
+            if (user.role === 'admin') navigate('/admin/dashboard');
+            else navigate('/student/dashboard');
+          } catch (err) {
+            setAuthError(err?.message || 'Login failed');
+          } finally {
+            setIsSubmitting(false);
+          }
         }}>
           {isSignUp && (
             <div>
@@ -110,6 +130,7 @@ export default function LoginPage() {
             </div>
           )}
 
+          {/* Email */}
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
               Email Address
@@ -119,12 +140,15 @@ export default function LoginPage() {
               <input
                 type="email"
                 id="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
                 className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200"
               />
             </div>
           </div>
 
+          {/* Password */}
           <div>
             <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
               Password
@@ -134,6 +158,8 @@ export default function LoginPage() {
               <input
                 type={showPassword ? 'text' : 'password'}
                 id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter your password"
                 className="w-full pl-10 pr-12 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200"
               />
@@ -146,6 +172,8 @@ export default function LoginPage() {
               </button>
             </div>
           </div>
+
+          {authError && <div className="text-sm text-red-600">{authError}</div>}
 
           {!isSignUp && (
             <div className="flex items-center justify-between text-sm">
@@ -161,9 +189,10 @@ export default function LoginPage() {
 
           <button
             type="submit"
+            disabled={isSubmitting}
             className="w-full bg-gray-900 text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition-all duration-200 hover:shadow-lg"
           >
-            {isSignUp ? 'Create Account' : 'Sign In'}
+            {isSignUp ? 'Create Account' : (isSubmitting ? 'Signing in…' : 'Sign In')}
           </button>
         </form>
 
