@@ -24,13 +24,128 @@ const users = [
     skills: ['Figma', 'UX']
   },
   {
+    id: 'u_student_3',
+    role: 'student',
+    name: 'Aditya Patel',
+    email: 'aditya@gmail.com',
+    password: 'password', // demo only
+    studentId: '2400030662',
+    avatarLetter: 'A',
+    skills: ['HTML', 'CSS', 'Python']
+  },
+  {
+    id: 'u_student_4',
+    role: 'student',
+    name: 'Raghuram Pasupuleti',
+    email: 'raghuram@gmail.com',
+    password: 'password', // demo only
+    studentId: '2400031015',
+    avatarLetter: 'R',
+    skills: ['BOOTSTRAP', 'Tailwind CSS', 'Python']
+  },{
+    id: 'u_student_5',
+    role: 'student',
+    name: 'Sonal Singh',
+    email: 'sonal@gmail.com',
+    password: 'password', // demo only
+    studentId: '2400033062',
+    avatarLetter: 'S',
+    skills: ['JAVA', 'MySQL', 'c++']
+  },
+  {
+    id: 'u_student_6',
+    role: 'student',
+    name: 'Karan Mehta',
+    email: 'karan@gmail.com',
+    password: 'password', // demo only
+    studentId: '2400031262',
+    avatarLetter: 'K',
+    skills: ['Javascript', 'Node.js', 'C']
+  },
+  {
+    id: 'u_student_7',
+    role: 'student',
+    name: 'Pragya Kumari',
+    email: 'pragya@gmail.com',
+    password: 'password', // demo only
+    studentId: '2400033304',
+    avatarLetter: 'P',
+    skills: ['React js', 'Javascript', 'Python']
+  },
+  {
+    id: 'u_student_8',
+    role: 'student',
+    name: 'Avinash Kumar',
+    email: 'avinash@gmail.com',
+    password: 'password', // demo only
+    studentId: '2400030952',
+    avatarLetter: 'A',
+    skills: ['React', 'Typescript', 'c/c++']
+  },
+  {
+    id: 'u_student_9',
+    role: 'student',
+    name: 'Akhil Sharma',
+    email: 'akhil@gmail.com',
+    password: 'password', // demo only
+    studentId: '2400032432',
+    avatarLetter: 'A',
+    skills: ['React', 'Docker', 'Github']
+  },
+  {
+    id: 'u_student_10',
+    role: 'student',
+    name: 'Nagasai Akhil',
+    email: 'nagasai@gmail.com',
+    password: 'password', // demo only
+    studentId: '2400032430',
+    avatarLetter: 'N',
+    skills: ['Numpy', 'Pandas', 'Matplotlib']
+  },
+  {
     id: 'u_admin_1',
     role: 'admin',
-    name: 'Admin User',
-    email: 'admin@gmail.com',
+    name: 'Naga Gopi',
+    email: 'naga@gmail.com',
+    password: 'password',
+    avatarLetter: 'N',
+    permissions: ['manage_internships', 'manage_users']
+  },
+  {
+    id: 'u_admin_2',
+    role: 'admin',
+    name: 'Pragya Kumari',
+    email: 'pragya@gmail.com',
+    password: 'password',
+    avatarLetter: 'P',
+    permissions: ['Access complete platform data', 'Update platform configuration']
+  },
+  {
+    id: 'u_admin_3',
+    role: 'admin',
+    name: 'Vivek Kumar Rathour',
+    email: 'vivek@gmail.com',
+    password: 'password',
+    avatarLetter: 'V',
+    permissions: ['Control email/app notifications', 'Add, update, or delete users']
+  },
+  {
+    id: 'u_admin_4',
+    role: 'admin',
+    name: 'Raghuram Pasupuleti',
+    email: 'raghuram@gmail.com',
+    password: 'password',
+    avatarLetter: 'R',
+    permissions: ['Add/update/delete internship listings', 'Super admin permissions']
+  },
+  {
+    id: 'u_admin_5',
+    role: 'admin',
+    name: 'Aditya Patel',
+    email: 'aditya@gmail.com',
     password: 'password',
     avatarLetter: 'A',
-    permissions: ['manage_internships', 'manage_users']
+    permissions: ['Edit roles', 'manage_users']
   }
 ];
 
