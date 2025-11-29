@@ -1,4 +1,4 @@
-# Samyak React Project
+# InternHub
 
 A modern React application built with Vite and TypeScript.
 
