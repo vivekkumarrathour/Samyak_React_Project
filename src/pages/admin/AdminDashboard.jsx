@@ -1,5 +1,6 @@
 import AdminLayout from '../../components/AdminLayout.jsx';
-import { Users, Briefcase, CheckCircle, TrendingUp, Eye, Bell } from 'lucide-react';
+import { Users, Briefcase, CheckCircle, TrendingUp, Eye, Bell, MessageSquare } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export default function AdminDashboard() {
 	// NEW: read session user
@@ -206,6 +207,16 @@ export default function AdminDashboard() {
 					</div>
 				</div>
 			</div>
+
+			{/* Floating Support Shortcut */}
+			<Link
+				to="/admin/support"
+				className="fixed bottom-6 right-6 z-50 flex items-center gap-3 bg-purple-600 hover:bg-purple-700 text-white px-4 py-3 rounded-full shadow-lg transition-all"
+				title="Open Support"
+			>
+				<MessageSquare className="w-5 h-5" />
+				<span className="hidden md:inline-block font-semibold">Support</span>
+			</Link>
 		</AdminLayout>
 	);
 }

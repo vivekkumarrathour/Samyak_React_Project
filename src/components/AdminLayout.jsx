@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Briefcase, CheckSquare, Calendar, User, Settings, LogOut } from 'lucide-react';
+import { LayoutDashboard, Briefcase, CheckSquare, Calendar, MessageSquare, User, Settings, LogOut } from 'lucide-react';
 
 export default function AdminLayout(props) {
   const { children } = props;
@@ -18,6 +18,7 @@ export default function AdminLayout(props) {
     { name: 'Internships', path: '/admin/internships', icon: Briefcase },
     { name: 'Tasks', path: '/admin/tasks', icon: CheckSquare },
     { name: 'Schedule', path: '/admin/schedule', icon: Calendar },
+    { name: 'Support', path: '/admin/support', icon: MessageSquare },
     { name: 'Profile', path: '/admin/profile', icon: User },
     { name: 'Settings', path: '/admin/settings', icon: Settings },
   ];
