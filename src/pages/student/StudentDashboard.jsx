@@ -1,5 +1,6 @@
 import StudentLayout from '../../components/StudentLayout.jsx';
-import { Briefcase, FileText, CheckCircle, TrendingUp, ArrowRight, Clock, Star } from 'lucide-react';
+import { Briefcase, FileText, CheckCircle, TrendingUp, ArrowRight, Clock, Star, MessageSquare } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export default function StudentDashboard() {
 	// NEW: read session user
@@ -161,6 +162,16 @@ export default function StudentDashboard() {
 					</div>
 				</div>
 			</div>
+
+			{/* Floating Support Shortcut */}
+			<Link
+				to="/student/support"
+				className="fixed bottom-6 right-6 z-50 flex items-center gap-3 bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-full shadow-lg transition-all"
+				title="Contact Support"
+			>
+				<MessageSquare className="w-5 h-5" />
+				<span className="hidden md:inline-block font-semibold">Support</span>
+			</Link>
 		</StudentLayout>
 	);
 }

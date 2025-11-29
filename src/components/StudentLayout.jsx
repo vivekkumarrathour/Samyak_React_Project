@@ -17,6 +17,7 @@ export default function StudentLayout(props) {
     { name: 'Dashboard', path: '/student/dashboard', icon: LayoutDashboard },
     { name: 'Internships', path: '/student/internships', icon: Briefcase },
     { name: 'Applications', path: '/student/applications', icon: FileText },
+    { name: 'Support', path: '/student/support', icon: MessageSquare },
     { name: 'Feedback', path: '/student/feedback', icon: MessageSquare },
     { name: 'Profile', path: '/student/profile', icon: User },
   ];
