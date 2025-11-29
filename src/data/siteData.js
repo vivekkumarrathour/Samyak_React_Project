@@ -279,6 +279,86 @@ const feedback = [
   { id: 'f2', userId: 'u_student_1', title: 'Need more resources for learning', category: 'Resources', content: 'Would appreciate more documentation and learning materials for the tech stack.', rating: 4, status: 'in_progress', date: '2025-01-28', adminReply: "We're working on adding more resources. Thanks for your suggestion!" }
 ];
 
+// ---------- CHATS (new) ----------
+const chats = [
+  {
+    id: 'c_1',
+    userId: 'u_student_1',
+    subject: 'Issue with project access',
+    status: 'open',
+    messages: [
+      { id: 'm_1', from: 'user', text: 'Hi, I cannot access the project repo.', time: new Date().toISOString() },
+      { id: 'm_2', from: 'admin', text: 'Hi Vivek — can you share the repo link you are trying to access?', time: new Date().toISOString() }
+    ],
+    createdAt: new Date().toISOString()
+  },
+  {
+    id: 'c_2',
+    userId: 'u_student_2',
+    subject: 'Need guidance on interview',
+    status: 'open',
+    messages: [
+      { id: 'm_1', from: 'user', text: 'Can I get tips for the upcoming interview?', time: new Date().toISOString() }
+    ],
+    createdAt: new Date().toISOString()
+  }
+];
+
+// Chat helpers
+export async function getChatsByUser(userId) {
+  await delay(200);
+  return chats.filter(c => c.userId === userId);
+}
+
+export async function getChatById(chatId) {
+  await delay(150);
+  return chats.find(c => c.id === chatId) || null;
+}
+
+export async function getAllChats() {
+  await delay(200);
+  return chats;
+}
+
+/**
+ * sendMessage
+ * - if chatId provided, append message to existing chat
+ * - if no chatId provided, creates a new chat for userId with subject
+ */
+export async function sendMessage({ chatId = null, userId, from, text, subject = 'Support Request' }) {
+  await delay(200);
+  const time = new Date().toISOString();
+  if (chatId) {
+    const chat = chats.find(c => c.id === chatId);
+    if (!chat) throw new Error('Chat not found');
+    const msg = { id: `m_${Date.now()}`, from, text, time };
+    chat.messages.push(msg);
+    chat.status = chat.status || 'open';
+    return { chat, msg };
+  } else {
+    const newChat = {
+      id: `c_${Date.now()}`,
+      userId,
+      subject,
+      status: 'open',
+      messages: [{ id: `m_${Date.now()}`, from, text, time }],
+      createdAt: time
+    };
+    chats.unshift(newChat);
+    return { chat: newChat, msg: newChat.messages[0] };
+  }
+}
+
+export async function markChatRead(chatId) {
+  await delay(100);
+  const chat = chats.find(c => c.id === chatId);
+  if (!chat) throw new Error('Chat not found');
+  // no-op for demo, but useful hook
+  return chat;
+}
+
+// ---------- END CHATS ----------
+
 // Helpers (simulate async backend)
 export async function login(email, password) {
   await delay(600);
@@ -380,6 +460,7 @@ export default {
   calendarEvents,
   tasks,
   feedback,
+  chats,
   login,
   getUserById,
   getUserByEmail,
@@ -393,5 +474,10 @@ export default {
   getTasks,
   getFeedback,
   getFeedbackByUser,
-  applyToInternship
+  applyToInternship,
+  getChatsByUser,
+  getChatById,
+  getAllChats,
+  sendMessage,
+  markChatRead
 };
