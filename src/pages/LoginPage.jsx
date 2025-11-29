@@ -16,12 +16,41 @@ export default function LoginPage() {
   const [authError, setAuthError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // NEW: captcha state
+  const [captchaQ, setCaptchaQ] = useState('');     // question text
+  const [captchaA, setCaptchaA] = useState(null);   // expected numeric answer
+  const [captchaInput, setCaptchaInput] = useState('');
+  const [captchaError, setCaptchaError] = useState('');
+
+  // generate simple math captcha
+  const generateCaptcha = () => {
+    const a = Math.floor(Math.random() * 9) + 1; // 1..9
+    const b = Math.floor(Math.random() * 9) + 1;
+    // randomly use + or -
+    if (Math.random() > 0.5) {
+      setCaptchaQ(`${a} + ${b} = ?`);
+      setCaptchaA(a + b);
+    } else {
+      // ensure non-negative
+      const x = Math.max(a, b);
+      const y = Math.min(a, b);
+      setCaptchaQ(`${x} - ${y} = ?`);
+      setCaptchaA(x - y);
+    }
+    setCaptchaInput('');
+    setCaptchaError('');
+  };
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
     }, 5000);
 
     return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    generateCaptcha();
   }, []);
 
   if (isLoading) {
@@ -102,6 +131,19 @@ export default function LoginPage() {
         <form className="space-y-5" onSubmit={async (e) => {
           e.preventDefault();
           setAuthError('');
+          setCaptchaError('');
+
+          // validate captcha
+          if (captchaA === null || String(captchaInput).trim() === '') {
+            setCaptchaError('Please solve the CAPTCHA');
+            return;
+          }
+          if (Number(captchaInput) !== Number(captchaA)) {
+            setCaptchaError('Incorrect answer — try again');
+            generateCaptcha();
+            return;
+          }
+
           setIsSubmitting(true);
           try {
             const user = await mockLogin(email.trim(), password);
@@ -112,6 +154,8 @@ export default function LoginPage() {
             else navigate('/student/dashboard');
           } catch (err) {
             setAuthError(err?.message || 'Login failed');
+            // regenerate captcha on auth error to avoid brute force
+            generateCaptcha();
           } finally {
             setIsSubmitting(false);
           }
@@ -171,6 +215,32 @@ export default function LoginPage() {
                 {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
               </button>
             </div>
+          </div>
+
+          {/* CAPTCHA */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">CAPTCHA</label>
+            <div className="flex items-center gap-3">
+              <div className="px-4 py-3 bg-gray-100 rounded-lg font-medium text-gray-900 select-none">
+                {captchaQ}
+              </div>
+              <input
+                type="number"
+                value={captchaInput}
+                onChange={(e) => setCaptchaInput(e.target.value)}
+                placeholder="Answer"
+                className="w-32 px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none"
+              />
+              <button
+                type="button"
+                onClick={generateCaptcha}
+                className="px-3 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg text-sm"
+                title="Refresh captcha"
+              >
+                ↻
+              </button>
+            </div>
+            {captchaError && <div className="text-sm text-red-600 mt-2">{captchaError}</div>}
           </div>
 
           {authError && <div className="text-sm text-red-600">{authError}</div>}
